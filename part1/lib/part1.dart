@@ -8,15 +8,15 @@ import 'dart:convert';
 // 2.   https://staging.revolvair.org/documentation/?url=https://staging.revolvair.org/documentation/api-docs.json#/RevolvAir/Modules%5CRevo%5CHttp%5CControllers%5CStationController%3A%3AshowUsersStation
 
 class Data {
-    Data({
-      required this.data
-    });
+  Data({
+    required this.data
+  });
 
-    List<Station> data;
+  List<Station> data;
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
-      data: List<Station>.from(json["data"].map((x) => Station.fromJson(x)))
-    );
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+    data: List<Station>.from(json["data"].map((x) => Station.fromJson(x)))
+  );
 }
 
 class Station {
@@ -28,11 +28,11 @@ class Station {
   Station({required this.id, required this.name, required this.desc, required this.userId});
 
   factory Station.fromJson(Map<String, dynamic> json) => Station(
-      id: json["id"],
-      name: json["name"],
-      desc: json["description"],
-      userId: json["user_id"]
-    );
+    id: json["id"],
+    name: json["name"],
+    desc: json["description"],
+    userId: json["user_id"]
+  );
 
   @override
   String toString() => '''Station $id (name: $name, desc: $desc, userId: $userId)''';
@@ -78,13 +78,20 @@ Future<List<Station>> fetchStation(http.Client client, String request) async {
   }
 }
 
-void main() async {
+void main() {
   print("");
   print("TP1 - Partie #1");
-
-  bool run = true;
   MyReadLine reader = MyReadLine();
 
+  menu(reader);
+  
+  print("");
+  print("Arrêt en cours...");
+}
+
+void menu(ReadLine reader) async {
+
+  bool run = true;
   while(run) {
     print("");
     print("1. Afficher la liste des stations actives contenant leur nom (name), leur description et le ID du propriétaire;");
@@ -129,7 +136,4 @@ void main() async {
       }
     } 
   }
-
-  print("");
-  print("Arrêt en cours...");
 }
