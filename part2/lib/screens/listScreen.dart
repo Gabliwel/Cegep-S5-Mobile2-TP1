@@ -67,12 +67,21 @@ class _ListScreen extends State<ListScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: ListView(
+              child: Scrollbar(
+                child: ListView.builder(
+                  itemCount: todos.length,
+                  itemBuilder: (context, index) {
+                    return TodosListElement(todo: todos[index], function: refreshList,key: UniqueKey(),);
+                  },
+                ),
+              )
+          
+              /*ListView(
                 children: [
                   for (Todo todo in todos)
-                    TodosListElement(todo: todo, function: refreshList),
-                ],
-              )
+                    if(_currentChoice == TodoSort.all || (_currentChoice == TodoSort.completed && todo.isCompleted == true) || (_currentChoice == TodoSort.notCompleted && todo.isCompleted == false))
+                      TodosListElement(todo: todo, function: refreshList),
+                ],*/
             ),
             Row(
               children: [
@@ -99,20 +108,26 @@ class _ListScreen extends State<ListScreen> {
     if (choice != _currentChoice) {
       setState(() {
         _currentChoice = choice;
+        todos = [];
       });
       refreshList();
     }
   }
 
   refreshList() {
-    setState(() {
       if(_currentChoice == TodoSort.all) { 
-        todos = Provider.of<TodoList>(context, listen: false).todoList;
+        setState(() {
+          todos = Provider.of<TodoList>(context, listen: false).todoList;
+        });
       } else if(_currentChoice == TodoSort.completed) {
-        todos = Provider.of<TodoList>(context, listen: false).getTodoOnCompletion(true);
+        setState(() {
+          todos = new List<Todo>.from(Provider.of<TodoList>(context, listen: false).getTodoOnCompletion(true).toList());
+        });
+        log(todos.toString());
       } else if (_currentChoice == TodoSort.notCompleted) {
-        todos = Provider.of<TodoList>(context, listen: false).getTodoOnCompletion(false);
+        setState(() {
+          todos = new List<Todo>.from(Provider.of<TodoList>(context, listen: false).getTodoOnCompletion(false).toList());
+        });
       }
-    });
   }
 }

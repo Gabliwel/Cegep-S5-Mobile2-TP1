@@ -96,7 +96,7 @@ class _DetailScreenState extends State<DetailScreen> {
     try {
       Future future = Provider.of<TodoList>(context, listen: false).deleteTodo(todo.id);
       future.whenComplete(() {
-        Navigator.pop(context);
+        Navigator.pop(context, "deleteDone");
       });
       return "Le todo ${widget.todo.name} a bien été effacé!";
     } catch (e) {

@@ -25,7 +25,6 @@ class _TodosListElement extends State<TodosListElement> {
     setState(() {
       isChecked = widget.todo.isCompleted;
     });
-    //log(isChecked.toString());
     super.initState();
   }
 
@@ -33,6 +32,7 @@ class _TodosListElement extends State<TodosListElement> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if(true == true)
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -44,9 +44,20 @@ class _TodosListElement extends State<TodosListElement> {
             ),
             Text(todo.name),
             OutlinedButton(
-              onPressed: () => Navigator.push(
+              onPressed: () async {
+                final result = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DetailScreen(todo: todo))).then((_) => widget.function()),
+                MaterialPageRoute(builder: (context) => DetailScreen(todo: todo)));
+                //log(result);
+                if(result == "deleteDone")
+                {
+                  widget.function();
+                }
+                else
+                {
+                  _returnDetail();
+                }
+              },
               child: const Icon(
                 Icons.info,
                 color: Colors.black87,
@@ -61,9 +72,20 @@ class _TodosListElement extends State<TodosListElement> {
   void _changeStatus(bool newValue) {
     Provider.of<TodoList>(context, listen: false).changeTodoStatus(todo.id, newValue);
     Provider.of<TodoList>(context, listen: false).saveCurrentTodosToRepository();
-    todo = Todo(id: todo.id, name: todo.name, desc: todo.desc, isCompleted: newValue);
     setState(() {
+      todo = Todo(id: todo.id, name: todo.name, desc: todo.desc, isCompleted: newValue);
       isChecked = newValue;
     });
+  }
+  
+  void _returnDetail() {
+    Todo? newTodo = Provider.of<TodoList>(context, listen: false).getById(widget.todo.id);
+    if(newTodo != null)
+    {
+      setState(() {
+        todo = newTodo;
+      });
+    }
+    widget.function();
   }
 }
